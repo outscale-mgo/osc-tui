@@ -16,7 +16,7 @@ class VolumeGrid(selectableGrid.SelectableGrid):
         self.col_titles = ["ID", "Name", 'Size (Gb)', 'Subregion']
 
         def on_selection(line):
-            popup.editSecurityGroup(self.form, line)
+            popup.editVolume(self.form, line)
 
         self.on_selection = on_selection
 
@@ -36,7 +36,7 @@ class VolumeGridForOneInstance(selectableGrid.SelectableGrid):
         self.col_titles = ["ID", "Name", 'Size (Gb)', 'Subregion']
 
         def on_selection(line):
-            popup.manageSecurityGroup(self.form, line)
+            popup.manageVolume(self.form, line)
 
         self.on_selection = on_selection
 

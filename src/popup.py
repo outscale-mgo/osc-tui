@@ -264,6 +264,86 @@ def manageSecurityGroup(form, sg, form_color='STANDOUT'):
     form.current_grid.refresh()
     form.current_grid.display()
 
+def editVolume(form, sg, form_color='STANDOUT'):
+    name = sg[1]
+    id = sg[0]
+    main.SECURITY_GROUP = id
+    F = displayPopup(name=name + ' (' + id + ')', color=form_color)
+    F.preserve_selected_widget = True
+
+    def exit():
+        form.current_grid.refresh()
+        F.editing = False
+
+    F.on_ok = exit
+    edit = F.add_widget(
+        npyscreen.ButtonPress,
+        name="EDIT",
+    )
+
+    def edit_cb():
+        exit()
+        mainForm.MODE = 'SECURITY-RULES'
+        form.reload()
+
+    delete = F.add_widget(
+        npyscreen.ButtonPress,
+        name="DELETE",
+    )
+
+    def delete_cb():
+        try:
+            val = main.GATEWAY.DeleteSecurityGroup(SecurityGroupId=id)
+        except BaseException:
+            raise
+        exit()
+    #edit.whenPressed = edit_cb
+    #delete.whenPressed = delete_cb
+    F.edit()
+    form.current_grid.refresh()
+    form.current_grid.display()
+
+
+def manageVolume(form, sg, form_color='STANDOUT'):
+    name = sg[1]
+    id = sg[0]
+    main.SECURITY_GROUP = id
+    F = displayPopup(name=name + ' (' + id + ')', color=form_color)
+    F.preserve_selected_widget = True
+
+    def exit():
+        F.editing = False
+
+    F.on_ok = exit
+    edit = F.add_widget(
+        npyscreen.ButtonPress,
+        name="EDIT",
+    )
+
+    def edit_cb():
+        exit()
+        mainForm.MODE = 'SECURITY-RULES'
+        form.reload()
+
+    remove = F.add_widget(
+        npyscreen.ButtonPress,
+        name="REMOVE FROM INSTANCE",
+    )
+
+    def remove_cb():
+        groups = main.VM["SecurityGroups"]
+        values = list()
+        for g in groups:
+            if id != g["SecurityGroupId"]:
+                values.append(g["SecurityGroupId"])
+        main.GATEWAY.UpdateVm(VmId=main.VM["VmId"], SecurityGroupIds=values)
+        exit()
+    #edit.whenPressed = edit_cb
+    #remove.whenPressed = remove_cb
+    F.edit()
+    form.current_grid.refresh()
+    form.current_grid.display()
+
 
 def addSecurityGroupToVm(form, form_color='STANDOUT'):
     id = main.SECURITY_GROUP
