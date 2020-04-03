@@ -1,4 +1,6 @@
+import threading
 import curses
+import time
 
 import npyscreen
 import pyperclip
@@ -20,6 +22,21 @@ MODE = "INSTANCES"
 SELECTED_BUTTON = 0
 CURRENT_GRID_CLASS = instancesGrid.InstancesGrid
 
+
+POLLING = False
+
+class my_thread(threading.Thread):
+    def __init__(self, to_run, ctx):
+        threading.Thread.__init__(self)
+        self.to_run = to_run
+        self.stop = False
+        self.stopped = False
+        self.ctx = ctx
+    def stop(self):
+        self.stop = True
+    def run(self):
+        self.to_run()
+        self.stopped = True
 
 class mainMenu(npyscreen.MultiLineAction):
     def __init__(self, screen, vmform=None, draw_line_at=6, *args, **keywords):
@@ -67,15 +84,15 @@ class mainMenu(npyscreen.MultiLineAction):
                 elif MODE == 'VOLUMES':
                     if act_on_this == 'CREATE NEW':
                         self.vmform.parentApp.addForm("CREATE_VOLUME",
-                                                    createVolume.CreateVolume,
-                                                    name="osc-tui")
+                                                      createVolume.CreateVolume,
+                                                      name="osc-tui")
                         self.vmform.parentApp.switchForm("CREATE_VOLUME")
                         return
                 elif MODE == 'SNAPSHOT':
                     if act_on_this == 'CREATE NEW':
                         self.vmform.parentApp.addForm("CREATE_SNAPSHOT",
-                                                    createSnapshot.CreateSnapshot,
-                                                    name="osc-tui")
+                                                      createSnapshot.CreateSnapshot,
+                                                      name="osc-tui")
                         self.vmform.parentApp.switchForm("CREATE_SNAPSHOT")
                         return
                 if act_on_this == "EXIT":
@@ -94,6 +111,7 @@ class mainMenu(npyscreen.MultiLineAction):
                 else:
                     SELECTED_BUTTON = self.cursor_line
                 self.vmform.reload()
+
 
     def set_up_handlers(self):
         super().set_up_handlers()
@@ -189,3 +207,30 @@ class MainForm(npyscreen.FormBaseNew):
         main.kill_threads()
         self.parentApp.addForm("Cockpit", MainForm, name="osc-tui")
         self.parentApp.switchForm("Cockpit")
+
+
+
+
+    def thread(self, fct, ctx):
+        t = my_thread(fct, ctx)
+        t.start()
+        main.add_thread(t)
+        return t
+
+    def start_polling(self, fct, ctx):
+        th = self.thread(fct, ctx)
+        i = 0
+        stri = "Polling"
+        while th.stopped == False:
+            if(i > 3):
+                i = 0
+            for n in range(0, i):
+                stri += "."
+            i = i + 1
+            x = int(curses.COLS/2 - len(stri)/2)
+            y = curses.LINES
+            x = 5
+            y = 5
+            self.curses_pad.addstr(y, x, stri)
+            time.sleep(1)
+

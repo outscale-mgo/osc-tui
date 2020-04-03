@@ -7,10 +7,10 @@ import popup
 import selectableGrid
 import virtualMachine
 
-
 class SnapshotGrid(selectableGrid.SelectableGrid):
     def __init__(self, screen, *args, **keywords):
         super().__init__(screen, *args, **keywords)
+        self.form.start_polling(self.refresh, self)
         self.refresh()
         self.col_titles = ["ID", "Description", "Size (Gb)", "Volume"]
 
