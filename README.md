@@ -18,8 +18,7 @@ Now you can clone the repository:
 And then open the project's folder: <br>
 
 * `cd osc-tui`
-* `git submodule init`
-* `git submodule update`
+* `git submodule update --init`
 
 <br>
 
@@ -34,6 +33,7 @@ You will need to install:<br>
 
 * `python3 -m pip install pyperclip`.
 * `python3 -m pip install autopep8`.
+* `python3 -m pip install requests`.
 * OSC-SDK-Python (https://github.com/outscale/osc-sdk-python).
 
 And now npyscreen:
