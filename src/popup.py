@@ -605,3 +605,6 @@ def editKeypair(form, line, form_color='STANDOUT'):
     delete.whenPressed = delete_cb
     F.edit()
     form.current_grid.display()
+
+def notImplemented():
+    npyscreen.notify_confirm('Not implemented yet!', 'Error')

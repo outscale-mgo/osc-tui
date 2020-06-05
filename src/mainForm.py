@@ -157,6 +157,8 @@ class MainForm(npyscreen.FormBaseNew):
             menu_desc.append('CREATE NEW')
         elif MODE == 'VOLUMES-VM':
             CURRENT_GRID_CLASS = volumesGrid.VolumeGridForOneInstance
+            menu_desc.append('ADD')
+            menu_desc.append('CREATE NEW')
         elif MODE == 'SNAPSHOT':
             CURRENT_GRID_CLASS = snapshotGrid.SnapshotGrid
             menu_desc.append('CREATE NEW')
