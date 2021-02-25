@@ -35,7 +35,7 @@ class CallbackFactory:
     def __call__(self):
         try:
             global res
-            main.GATEWAY = Gateway(**{"profile": self.name})
+            main.GATEWAY = Gateway(**{"profile": self.name, "user_agent": "osc-tui/21.02"})
 
             # The following code is a little bit completely tricky :)
             # Here is the idea:
